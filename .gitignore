@@ -13,7 +13,7 @@ build/
 #
 *.out
 *.test
-coverage.txt
+coverage.out
 profile.out
 
 # Vendor

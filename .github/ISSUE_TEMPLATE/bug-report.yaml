@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug encountered while operating ai-doc-formatter
+description: Report a bug encountered while operating doc-formatter
 labels: 
   - bug
 

@@ -1,5 +1,5 @@
 name: Failing Test
-description: Report continuously failing tests or jobs in ai-doc-formatter CI
+description: Report continuously failing tests or jobs in doc-formatter CI
 labels: 
   - invalid
 

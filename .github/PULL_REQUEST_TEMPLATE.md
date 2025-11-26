@@ -1,4 +1,4 @@
-<!-- Thank you for contributing to ai-doc-formatter!
+<!-- Thank you for contributing to doc-formatter!
 
 Note: 
 
