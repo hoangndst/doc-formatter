@@ -13,8 +13,12 @@ import (
 func main() {
 	stmts, err := gormschema.New("postgres").Load(&persistence.UserModel{})
 	if err != nil {
-		logrus.Info(os.Stderr, "failed to load gorm schema: %v\n", err)
+		logrus.Errorf("failed to load gorm schema: %v\n", err)
 		os.Exit(1)
 	}
-	io.WriteString(os.Stdout, stmts)
+	_, err = io.WriteString(os.Stdout, stmts)
+	if err != nil {
+		os.Exit(1)
+		return
+	}
 }
