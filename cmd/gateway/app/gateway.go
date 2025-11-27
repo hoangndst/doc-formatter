@@ -10,13 +10,13 @@ import (
 
 func NewCmdGateway() *cobra.Command {
 	var (
-		gatewayShort = i18n.T(`Start gateway`)
+		gatewayShort = i18n.T(`Start api gateway.`)
 
-		gatewayLong = i18n.T(`Start gateway.`)
+		gatewayLong = i18n.T(`Start api gateway.`)
 
 		gatewayExample = i18n.T(`
 		# Start gateway
-		gateway `)
+		gateway --http-addr :8080 --auth-grpc-addr localhost:8081`)
 	)
 
 	o := options.NewOptions()

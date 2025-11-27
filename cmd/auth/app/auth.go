@@ -11,18 +11,18 @@ import (
 
 func NewCmdAuth() *cobra.Command {
 	var (
-		serverShort = i18n.T(`Start authentication manager.`)
+		serverShort = i18n.T(`Start authentication service.`)
 
-		serverLong = i18n.T(`Start authentication manager.`)
+		serverLong = i18n.T(`Start authentication service.`)
 
 		serverExample = i18n.T(`
-		# Start vision server
-		auth --db-host localhost --db-port 5432 --db-name vision --db-user root --db-pass 123456`)
+		# Start authentication service
+		auth --db-host localhost --db-port 5432 --db-name auth --db-user root --db-pass 123456`)
 	)
 
 	o := options.NewAuthOptions()
 	cmd := &cobra.Command{
-		Use:     "server",
+		Use:     "auth",
 		Short:   serverShort,
 		Long:    templates.LongDesc(serverLong),
 		Example: templates.Examples(serverExample),
