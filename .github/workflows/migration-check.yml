@@ -1,0 +1,91 @@
+name: Migration Check
+
+on:
+  workflow_call:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "internal/**/migrations/**"
+      - "atlas.hcl"
+      - ".github/workflows/migration-check.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "internal/**/migrations/**"
+      - "atlas.hcl"
+      - ".github/workflows/migration-check.yml"
+
+jobs:
+  MigrationCheck:
+    name: Database Migration Validation
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go 1.25
+        uses: actions/setup-go@v6
+        with:
+          go-version: 1.25
+
+      - name: Download Go dependencies
+        run: go mod download
+
+      - name: Install Atlas CLI
+        run: |
+          curl -sSf https://atlasgo.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Validate migration integrity (auth service)
+        run: |
+          atlas migrate validate \
+            --dir "file://internal/auth/infra/persistence/migrations" \
+            --dev-url "docker://postgres/16/dev"
+
+      - name: Lint migrations (auth service)
+        run: |
+          atlas migrate lint \
+            --dir "file://internal/auth/infra/persistence/migrations" \
+            --dev-url "docker://postgres/16/dev" \
+            --latest 1
+
+      - name: Test migrations against dev database (auth service)
+        env:
+          AUTH_DB_USER: postgres
+          AUTH_DB_PASS: postgres
+          AUTH_DB_NAME: auth_db
+          AUTH_DB_HOST: localhost
+        run: |
+          # Test dry-run of migrations
+          atlas migrate apply \
+            --env auth \
+            --dry-run
+
+      - name: Check migration status (auth service)
+        env:
+          AUTH_DB_USER: postgres
+          AUTH_DB_PASS: postgres
+          AUTH_DB_NAME: auth_db
+          AUTH_DB_HOST: localhost
+        run: |
+          # Verify migration hash integrity
+          atlas migrate hash \
+            --env auth

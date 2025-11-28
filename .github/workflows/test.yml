@@ -49,3 +49,7 @@ jobs:
         uses: golangci/golangci-lint-action@v9
         with:
           version: v2.6
+
+  CallMigrationCheck:
+    name: Call Migration Check Workflow
+    uses: ./.github/workflows/migration-check.yml
